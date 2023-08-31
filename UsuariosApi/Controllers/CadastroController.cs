@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Mvc;
 using UsuariosApi.Data.Dtos;
-using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
+using UsuariosApi.Service;
 
 namespace UsuariosApi.Controllers
 {
@@ -8,9 +9,21 @@ namespace UsuariosApi.Controllers
     [ApiController]
     public class CadastroController : ControllerBase
     {
+        private CadastroService _cadastroService;
+
+        public CadastroController(CadastroService cadastroService)
+        {
+            _cadastroService = cadastroService;
+        }
+
         [HttpPost]
         public IActionResult CadastroUsuario(CreateUsuarioDto createDto)
         {
+            Result resultado = _cadastroService.CadastraUsuario(createDto);
+            if (resultado.IsFailed)
+            {
+                return StatusCode(500);
+            }
             return Ok();
         }
     }
